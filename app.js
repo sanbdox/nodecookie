@@ -2,6 +2,26 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 3001;
 
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
+// set a cookie
+app.use(function (req, res, next) {
+  // check if client sent cookie
+  var cookie = req.cookies.cookieName;
+  if (cookie === undefined) {
+    // no: set a new cookie
+    var randomNumber=Math.random().toString();
+    randomNumber=randomNumber.substring(2,randomNumber.length);
+    res.cookie('cookie111Name',randomNumber, { maxAge: 900000 });
+    console.log('cookie created successfully');
+  } else {
+    // yes, cookie was already present 
+    console.log('cookie exists', cookie);
+  } 
+  next(); // <-- important!
+});
+
 app.get("/", (req, res) => res.type('html').send(html));
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
